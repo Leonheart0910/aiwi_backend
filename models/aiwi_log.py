@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
 from sqlalchemy.orm import relationship
-from db.database import Base
+from db.database import base
 
-class AiwiLog(Base):
+class AiwiLog(base):
 
     __tablename__ = "aiwi_log"
 

@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
 from sqlalchemy.orm import relationship
-from db.database import Base
+from db.database import base
 
-class Aiwi(Base):
+class Aiwi(base):
 
     __tablename__ = "aiwi"
 

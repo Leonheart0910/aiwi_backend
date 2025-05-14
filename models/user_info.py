@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from db.database import Base
+from db.database import base
 
-class UserInfo(Base):
+class UserInfo(base):
     __tablename__ = "user_info"
 
     user_info_id = Column(Integer, primary_key=True)
