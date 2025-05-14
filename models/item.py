@@ -14,4 +14,4 @@ class Item(base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     collection = relationship("Collection", back_populates="items")
-    images = relationship("Image", back_populates="item", cascade="all, -orphan")
+    images = relationship("Image", back_populates="item", cascade="all, delete-orphan")
