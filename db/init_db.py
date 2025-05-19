@@ -1,6 +1,5 @@
 from db.database import base, engine
-
-
+from models import *
 # base에 등록된 모든 모델의 메타 정보를 기준으로 실제 DB에 테이블을 생성
 def init():
     base.metadata.create_all(bind=engine)
