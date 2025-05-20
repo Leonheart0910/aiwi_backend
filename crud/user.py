@@ -11,17 +11,17 @@ def create_user(db: Session, user_create: UserCreate):
         nickname=user_create.nickname
     )
     db.add(user)
+    db.flush()
+
+    if user_create.user_info:
+        user_info = UserInfo(
+            age=user_create.user_info.age,
+            sex=user_create.user_info.sex,
+            user_id=user.user_id
+        )
+        db.add(user_info)
     db.commit()
     db.refresh(user)
-
-    user_info = UserInfo(
-        age=user_create.user_info.age,
-        sex=user_create.user_info.sex,
-        user_id=user.user_id
-    )
-    db.add(user_info)
-    db.commit()
-    db.refresh(user_info)
 
     return user
 def find_user_by_id(db: Session, user_id: int):
