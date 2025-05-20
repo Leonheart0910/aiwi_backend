@@ -38,5 +38,5 @@ def search_naver_shopping(query: str):
         return response.json()
     else:
         # 실패 시 로그 출력
-        print(f"[❌ Naver API 오류] {response.status_code}: {response.text}")
-        return None
+            print(f"[❌ Naver API 오류] {response.status_code}: {response.text}")
+            return None
