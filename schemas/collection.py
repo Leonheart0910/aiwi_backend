@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional
-
 from pydantic import BaseModel
+
+from typing import List
+from schemas.item import ItemOut
 
 class CollectionCreate(BaseModel):
     collection_title: str
@@ -15,4 +17,15 @@ class CollectionOut(BaseModel):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class CollectionWithItems(BaseModel):
+    collection_id: int
+    collection_title: str
+    user_id: int
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    items: List[ItemOut] = []
+
+    class Config:
+        from_attributes = True

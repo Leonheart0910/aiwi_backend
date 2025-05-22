@@ -7,7 +7,7 @@ class AiwiCreate(BaseModel):
     user_id: int
 
 class AiwiOut(BaseModel):
-    aiwi_id: int
+    chat_id: int
     title: str
     user_id: int
     created_at: Optional[datetime]

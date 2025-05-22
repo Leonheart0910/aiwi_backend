@@ -11,5 +11,5 @@ Base = declarative_base()
 
 
 ##### db 연결하고
-각 data base에 연결하고 data전송하는 쿼리들 날리는 기능
-예외처리는 data table 찾지 못할때는 loging처리
+# 각 data base에 연결하고 data전송하는 쿼리들 날리는 기능
+# 예외처리는 data table 찾지 못할때는 loging처리
