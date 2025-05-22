@@ -28,3 +28,8 @@ class UserSignupRequest(BaseModel):
     password: str
     age: int
     sex: str
+
+class UserInputRequest(BaseModel):
+    aiwi_id: Optional[int] = None
+    user_id: int
+    query: str
