@@ -22,6 +22,19 @@ class UserOut(BaseModel):
     class Config:
         from_attributes = True
 
+class UserLoginRequest(BaseModel):
+    email: str
+    password: str
+class UserLoginResponse(BaseModel):
+    user_id: int
+    nickname: str
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
 class UserSignupRequest(BaseModel):
     email: str
     nickname: str
