@@ -13,7 +13,11 @@ def user_login_service(email: str,
         if not existing_user:
             raise HTTPException(status_code=404, detail="User not found")
         else:
-            return existing_user
+            return {
+                "user_id" : existing_user.user_id,
+                "email": existing_user.email,
+                "nickname": existing_user.nickname
+            }
     except Exception as e:
         raise e
 
