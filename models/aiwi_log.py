@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from db.database import base
 
@@ -8,13 +8,13 @@ class AiwiLog(base):
 
     chat_log_id = Column(Integer,primary_key=True, index=True)
     user_input = Column(String(255), nullable=False)
-    ai_input1 = Column(String(255), nullable=False)
-    ai_input2 = Column(String(255), nullable=False)
-    ai_input3 = Column(String(255), nullable=False)
-    aiwi_id = Column(Integer, ForeignKey("aiwi.aiwi_id"), nullable=False)
+    ai_output1 = Column(Text, nullable=False)
+    ai_output2 = Column(Text, nullable=False)
+    ai_output3 = Column(Text, nullable=False)
+    chat_id = Column(Integer, ForeignKey("aiwi.chat_id"), nullable=False)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     aiwi = relationship("Aiwi", backref="aiwi_logs")
 

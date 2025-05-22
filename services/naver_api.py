@@ -19,7 +19,7 @@ def search_naver_shopping(query: str):
 
     params = {
         "query": query,
-        "display": 10,
+        "display": 5,
         "start": 1,
         "sort": "sim"
     }
