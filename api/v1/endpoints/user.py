@@ -4,10 +4,10 @@ from fastapi import APIRouter, Query, Form, HTTPException
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 from core.dependencies import get_db
-from schemas.user import UserSignupRequest, UserInputRequest
+from schemas.user import UserSignupRequest, UserInputRequest, UserLoginRequest
 from services.gemini_api import process_user_input
 from fastapi import Depends
-from services.user_service import user_signup_service
+from services.user_service import user_signup_service, user_login_service
 
 router = APIRouter()
 
@@ -33,6 +33,18 @@ def prompt_input(
             "result": result  # result 전체를 error 정보와 함께 보냄
         }
         return JSONResponse(status_code=500, content=response_data)
+
+
+@router.post("/user/login")
+def user_login(
+        request: UserLoginRequest,
+        db: Session = Depends(get_db)
+):
+    try:
+        user = user_login_service(request.email, request.password, db=db)
+        return JSONResponse(status_code=200, content={user})
+    except HTTPException as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 @router.post("/user/signup")
 def user_signup(
