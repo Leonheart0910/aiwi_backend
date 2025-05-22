@@ -42,7 +42,12 @@ def user_login(
 ):
     try:
         user = user_login_service(request.email, request.password, db=db)
-        return JSONResponse(status_code=200, content={user})
+        return JSONResponse(status_code=200, content={
+            "status": "ok",
+            "user_id": user["user_id"],
+            "email": user["email"],
+            "nickname": user["nickname"]
+        })
     except HTTPException as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
