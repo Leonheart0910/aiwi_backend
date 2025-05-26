@@ -25,6 +25,10 @@ class UserOut(BaseModel):
 class UserLoginRequest(BaseModel):
     email: str
     password: str
+
+class UserWithDrawRequest(BaseModel):
+    user_id: int
+
 class UserLoginResponse(BaseModel):
     user_id: int
     nickname: str
