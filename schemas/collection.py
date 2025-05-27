@@ -9,7 +9,7 @@ class CollectionCreate(BaseModel):
     collection_title: str
     user_id: int
 
-class CollectionOut(BaseModel):
+class CollectionResponse(BaseModel):
     collection_id: int
     collection_title: str
     user_id: int
@@ -29,3 +29,7 @@ class CollectionWithItems(BaseModel):
 
     class Config:
         from_attributes = True
+
+class CollectionCreateRequest(BaseModel):
+    user_id : int
+    collection_title: str
