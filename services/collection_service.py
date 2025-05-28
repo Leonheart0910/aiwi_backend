@@ -2,7 +2,8 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from schemas.collection import CollectionCreate, CollectionResponse, CollectionItemList
-from crud.collection import create_collection, delete_collection_by_id, get_collection_with_items
+from crud.collection import create_collection, delete_collection_by_id, get_collection_with_items, \
+    delete_collection_items_by_id
 from schemas.image import ImageInfo
 from schemas.item import ItemInfo
 
@@ -78,5 +79,15 @@ def get_collection_items_service(
             ]
         )
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+def delete_collection_item_service(
+    collection_id: int,
+    item_id: int,
+    db: Session
+):
+    try:
+        return delete_collection_items_by_id(db= db, collection_id=collection_id, item_id=item_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
