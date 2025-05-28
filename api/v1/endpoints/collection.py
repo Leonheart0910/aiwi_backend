@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from core.dependencies import get_db
 from schemas.collection import CollectionCreateRequest
-from services.collection_service import collection_create_service
+from services.collection_service import collection_create_service, get_collection_items_service
+
 router = APIRouter()
 
 
@@ -30,3 +31,15 @@ def delete_collection(
         db : Session = Depends(get_db)
 ):
     return delete_collection(collection_id, db)
+
+@router.get(
+    "/collection/{collection_id}"
+)
+def get_collection_items(
+        collection_id: int,
+        db : Session = Depends(get_db)
+):
+    return get_collection_items_service(
+        collection_id=collection_id,
+        db=db
+    )
