@@ -15,3 +15,11 @@ class ImageOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ImageInfo(BaseModel):
+    image_id: int
+    image_url: str
+    created_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
