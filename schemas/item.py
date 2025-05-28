@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from schemas.image import ImageOut
+from schemas.image import ImageOut, ImageInfo
 
 
 class CreateItem(BaseModel):
@@ -22,5 +22,16 @@ class ItemOut(BaseModel):
     images: List[ImageOut] = []
     created: Optional[datetime]
     updated: Optional[datetime]
+    class Config:
+        from_attributes = True
+
+class ItemInfo(BaseModel):
+    item_id : int
+    category_name : str
+    product_name : str
+    product_info : str
+    image: List[ImageInfo] = []
+    created_at : Optional[datetime]
+
     class Config:
         from_attributes = True
