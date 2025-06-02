@@ -7,7 +7,7 @@ from core.dependencies import get_db
 from schemas.user import UserSignupRequest, UserInputRequest, UserLoginRequest, UserWithDrawRequest
 from services.gemini_api import process_user_input
 from fastapi import Depends
-from services.user_service import user_signup_service, user_login_service, user_withdraw_service
+from services.user_service import user_signup_service, user_login_service, user_withdraw_service, user_information_service
 
 router = APIRouter()
 
@@ -84,4 +84,13 @@ def user_withdraw(
         return response
     except HTTPException as e:
         raise e
-
+@router.get("/user/{user_id}")
+def user_information(user_id: int,
+                     db : Session = Depends(get_db)):
+    try:
+        response = user_information_service(
+            user_id = user_id,
+            db=db)
+        return response
+    except HTTPException as e:
+        raise e
