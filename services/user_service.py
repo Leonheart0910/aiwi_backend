@@ -1,3 +1,6 @@
+from api.message.error_message import ErrorMessage
+from api.message.success_message import SuccessMessage
+from exception.exception import OperatedException, ErrorCode
 from schemas.user import UserCreate, UserLoginRequest, UserInformationResponse
 from schemas.user_info import UserInfoCreate, UserInfoOut
 from crud.user import create_user, delete_user
@@ -11,7 +14,11 @@ def user_login_service(email: str,
         existing_user = db.query(User).filter(User.email == email ,
                                               User.password == password).first()
         if not existing_user:
-            raise HTTPException(status_code=404, detail="해당하는 유저를 찾을 수 없습니다.")
+            raise OperatedException(
+            status_code=400,
+            error_code=ErrorCode.USER_LOGIN_FAIL.value,
+            detail=ErrorMessage.USER_LOGIN_FAIL.value
+            )
         else:
             return {
                 "user_id" : existing_user.user_id,
@@ -40,8 +47,12 @@ def user_signup_service(email: str,
     #SQLAlchemy모델을 만들어서 DB에 저장한다.
         created_user = create_user(db=db, user_create=user_data)
         return created_user
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except OperatedException:
+        raise OperatedException(
+            status_code=400,
+            error_code=ErrorCode.USER_SIGNUP_FAIL.value,
+            detail=ErrorMessage.USER_SIGNUP_FAIL.value
+        )
 
 
 def user_withdraw_service(user_id: int,
@@ -49,21 +60,32 @@ def user_withdraw_service(user_id: int,
     try:
         existing_user = db.query(User).filter(User.user_id == user_id).first()
         if not existing_user:
-            raise HTTPException(status_code=404, detail="해당하는 유저를 찾을 수 없습니다.")
+            raise OperatedException(
+                status_code=400,
+                error_code=ErrorCode.USER_WITHDRAW_FAIL.value,
+                detail= ErrorMessage.USER_WITHDRAW_FAIL.value
+            )
         else:
             return {
                 "status" : "ok",
-                "message" : "회원탈퇴가 정상적으로 승인되었습니다."
+                "message" : SuccessMessage.WITHDRAW_SUCCESS
             }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except OperatedException:
+        raise OperatedException(
+            status_code=400,
+            error_code=ErrorCode.USER_WITHDRAW_FAIL.value,
+            detail= ErrorMessage.USER_WITHDRAW_FAIL.value
+        )
 
 def user_information_service(user_id: int,
                              db: Session):
     try:
         existing_user = db.query(User).filter(User.user_id == user_id).first()
         if not existing_user:
-            raise HTTPException(status_code=404, detail="해당하는 유저를 찾을 수 없습니다.")
+            raise OperatedException(
+                status_code=404,
+                error_code=ErrorCode.USER_NOT_FOUND.value,
+                detail=ErrorMessage.USER_NOT_FOUND.value)
         else:
             response = UserInformationResponse(
                 user_id=existing_user.user_id,
@@ -82,5 +104,9 @@ def user_information_service(user_id: int,
                 updated_at=existing_user.updated_at,
             )
             return response
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except OperatedException :
+        raise OperatedException(
+            status_code = 400,
+            error_code= ErrorCode.USER_NOT_FOUND.value,
+            detail = ErrorMessage.USER_INFORMATION_FAIL.value
+        )
