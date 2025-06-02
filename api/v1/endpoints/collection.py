@@ -18,10 +18,11 @@ def create_collection(
         request : CollectionCreateRequest,
         db : Session = Depends(get_db)
 ):
-    try:
-        return collection_create_service(db, request.data)
-    except HTTPException as e:
-        raise e
+    return collection_create_service(
+        user_id=request.user_id,
+        collection_title=request.collection_title,
+        db = db)
+
 
 
 @router.delete(
@@ -53,7 +54,4 @@ def delete_collection_item(
         item_id: int,
         db : Session = Depends(get_db)
 ):
-    try:
-        return delete_collection_item_service(collection_id=collection_id, item_id=item_id, db=db)
-    except HTTPException as e:
-        raise e
+    return delete_collection_item_service(collection_id=collection_id, item_id=item_id, db=db)
