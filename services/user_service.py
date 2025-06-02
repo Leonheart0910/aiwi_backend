@@ -1,5 +1,5 @@
-from schemas.user import UserCreate, UserLoginRequest
-from schemas.user_info import UserInfoCreate
+from schemas.user import UserCreate, UserLoginRequest, UserInformationResponse
+from schemas.user_info import UserInfoCreate, UserInfoOut
 from crud.user import create_user, delete_user
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
@@ -11,7 +11,7 @@ def user_login_service(email: str,
         existing_user = db.query(User).filter(User.email == email ,
                                               User.password == password).first()
         if not existing_user:
-            raise HTTPException(status_code=404, detail=USER_NOT_FOUND)
+            raise HTTPException(status_code=404, detail="해당하는 유저를 찾을 수 없습니다.")
         else:
             return {
                 "user_id" : existing_user.user_id,
@@ -55,5 +55,32 @@ def user_withdraw_service(user_id: int,
                 "status" : "ok",
                 "message" : "회원탈퇴가 정상적으로 승인되었습니다."
             }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+def user_information_service(user_id: int,
+                             db: Session):
+    try:
+        existing_user = db.query(User).filter(User.user_id == user_id).first()
+        if not existing_user:
+            raise HTTPException(status_code=404, detail="해당하는 유저를 찾을 수 없습니다.")
+        else:
+            response = UserInformationResponse(
+                user_id=existing_user.user_id,
+                email = existing_user.email,
+                password = existing_user.password,
+                nickname = existing_user.nickname,
+                user_info= UserInfoOut(
+                    user_info_id=existing_user.user_info.user_info_id,
+                    age=existing_user.user_info.age,
+                    sex=existing_user.user_info.sex,
+                    user_id= existing_user.user_info.user_id,
+                    created_at=existing_user.user_info.created_at,
+                    updated_at=existing_user.user_info.updated_at,
+                ),
+                created_at=existing_user.created_at,
+                updated_at=existing_user.updated_at,
+            )
+            return response
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
