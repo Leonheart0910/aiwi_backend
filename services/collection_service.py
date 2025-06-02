@@ -1,6 +1,9 @@
 
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+
+from api.message.error_message import ErrorMessage
+from exception.exception import OperatedException, ErrorCode
 from schemas.collection import CollectionCreate, CollectionResponse, CollectionItemList
 from crud.collection import create_collection, delete_collection_by_id, get_collection_with_items, \
     delete_collection_items_by_id
@@ -21,8 +24,11 @@ def collection_create_service(
 
         created_collection = create_collection(db, collection_data)
         if not created_collection:
-            raise HTTPException(status_code=400, detail="장바구니가 만들어지지 않았습니다.")
-
+            raise OperatedException(
+                status_code=500,
+                error_code=ErrorCode.COLLECTION_CREATE_FAIL.value,
+                detail=ErrorMessage.COLLECTION_CREATE_FAIL.value
+            )
         return CollectionResponse(
             collection_id= created_collection.collection_id,
             collection_title= created_collection.collection_title,
@@ -30,8 +36,12 @@ def collection_create_service(
             created_at= created_collection.created_at,
             updated_at= created_collection.updated_at,
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except OperatedException:
+        raise OperatedException(
+            status_code=500,
+            error_code=ErrorCode.COLLECTION_CREATE_FAIL.value,
+            detail=ErrorMessage.COLLECTION_CREATE_FAIL.value
+        )
 
 def collection_delete_service(
     collection_id: int,
@@ -40,7 +50,11 @@ def collection_delete_service(
     try:
         collection = delete_collection_by_id(db, collection_id)
         if not collection:
-            raise HTTPException(status_code=404, detail="존재하지 않는 장바구니입니다.")
+            raise OperatedException(
+                status_code=404,
+                error_code=ErrorCode.COLLECTION_NOT_FOUND.value,
+                detail=ErrorMessage.COLLECTION_NOT_FOUND.value
+            )
         else:
             return {"message": f"{collection.collection_title}이 삭제되었습니다."}
     except Exception as e:
@@ -54,7 +68,11 @@ def get_collection_items_service(
         info_list = get_collection_with_items(collection_id=collection_id, db=db)
 
         if not info_list:
-            raise HTTPException(status_code=404, detail="Collection not found")
+            raise OperatedException(
+                status_code=404,
+                error_code=ErrorCode.COLLECTION_ITEMS_INFORMATION_FAIL.value,
+                detail=ErrorMessage.COLLECTION_ITEMS_INFORMATION_FAIL.value
+            )
 
         return CollectionItemList(
             collection_id=info_list.collection_id,
@@ -79,8 +97,12 @@ def get_collection_items_service(
             ]
         )
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except OperatedException:
+        raise OperatedException(
+            status_code=500,
+            error_code=ErrorCode.ITEM_IN_COLLECTION_INFORMATION_FAIL.value,
+            detail=ErrorMessage.ITEM_IN_COLLECTION_INFORMATION_FAIL.value
+            )
 
 def delete_collection_item_service(
     collection_id: int,
@@ -89,5 +111,9 @@ def delete_collection_item_service(
 ):
     try:
         return delete_collection_items_by_id(db= db, collection_id=collection_id, item_id=item_id)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except OperatedException :
+        raise OperatedException(
+            status_code=500,
+            error_code=ErrorCode.ITEM_IN_COLLECTION_DELETE_FAIL.value,
+            detail=ErrorMessage.ITEM_IN_COLLECTION_DELETE_FAIL.value
+        )
