@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import APIRouter, Query, Form, HTTPException
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
@@ -16,23 +14,16 @@ def prompt_input(
     request: UserInputRequest,
     db: Session = Depends(get_db)
 ):
-    try:
-        result = process_user_input(query=request.query, aiwi_id=request.aiwi_id, user_id=request.user_id, db=db)
+    result = process_user_input(query=request.query, aiwi_id=request.aiwi_id, user_id=request.user_id, db=db)
 
-        if "error" in result:
-            return JSONResponse(status_code=500, content=result)
+    if "error" in result:
+        return JSONResponse(status_code=500, content=result)
 
-        return JSONResponse(status_code=200, content={
-            "status": "ok",
-            "chat_id": result["chat_id"],
-            "final_result": result["final_result"]
-        })
-    except Exception as e:
-        response_data = {
-            "error발생!!": str(e),
-            "result": result  # result 전체를 error 정보와 함께 보냄
-        }
-        return JSONResponse(status_code=500, content=response_data)
+    return JSONResponse(status_code=200, content={
+        "status": "ok",
+        "chat_id": result["chat_id"],
+        "final_result": result["final_result"]
+    })
 
 
 @router.post("/user/login")
@@ -40,57 +31,45 @@ def user_login(
         request: UserLoginRequest,
         db: Session = Depends(get_db)
 ):
-    try:
-        user = user_login_service(request.email, request.password, db=db)
-        return JSONResponse(status_code=200, content={
-            "status": "ok",
-            "user_id": user["user_id"],
-            "email": user["email"],
-            "nickname": user["nickname"]
-        })
-    except HTTPException as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+    user = user_login_service(request.email, request.password, db=db)
+    return JSONResponse(status_code=200, content={
+        "status": "ok",
+        "user_id": user["user_id"],
+        "email": user["email"],
+        "nickname": user["nickname"]
+    })
 
 @router.post("/user/signup")
 def user_signup(
         request: UserSignupRequest,
         db: Session = Depends(get_db)
 ):
-    try:
-        user_signup_service(
-            email= request.email,
-            password= request.password,
-            nickname= request.nickname,
-            age= request.age,
-            sex = request.sex,
-            db=db
-        )
-        return JSONResponse(status_code=200, content={"status": "ok"})
-    except HTTPException as he:
-        raise he
-
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+    user_signup_service(
+        email= request.email,
+        password= request.password,
+        nickname= request.nickname,
+        age= request.age,
+        sex = request.sex,
+        db=db
+    )
+    return JSONResponse(status_code=200, content={"status": "ok"})
 
 @router.delete("/user/withdraw")
 def user_withdraw(
         request: UserWithDrawRequest,
         db: Session = Depends(get_db)
 ):
-    try:
-        response =user_withdraw_service(
-            user_id = request.user_id,
-            db=db)
-        return response
-    except HTTPException as e:
-        raise e
+
+    response =user_withdraw_service(
+        user_id = request.user_id,
+        db=db)
+    return response
+
 @router.get("/user/{user_id}")
 def user_information(user_id: int,
                      db : Session = Depends(get_db)):
-    try:
-        response = user_information_service(
-            user_id = user_id,
-            db=db)
-        return response
-    except HTTPException as e:
-        raise e
+    response = user_information_service(
+        user_id = user_id,
+        db=db)
+    return response
+
