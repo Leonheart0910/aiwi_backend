@@ -50,3 +50,14 @@ class UserInputRequest(BaseModel):
     aiwi_id: Optional[int] = None
     user_id: int
     query: str
+
+class UserInformationResponse(BaseModel):
+    user_id: int
+    email: str
+    password: str
+    nickname: str
+    user_info: UserInfoOut
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    class Config:
+        from_attributes = True

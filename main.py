@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from api.v1.routers import router as api_router  # 라우터 모듈 import
 from fastapi.middleware.cors import CORSMiddleware
 
+from exception.handler import set_error_handlers
 
 app = FastAPI()
 
@@ -20,6 +21,7 @@ app.add_middleware(
 )
 app.include_router(api_router, prefix="/api/v1")
 
+set_error_handlers(app)
 #
 # # DB 모델 생성
 #
