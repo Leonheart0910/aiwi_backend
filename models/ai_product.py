@@ -7,7 +7,7 @@ from db.database import base
 class AiProduct(base):
     __tablename__ = "ai_product"
     ai_product_id= Column(Integer, primary_key=True)
-    ai_keyword_id = Column(Integer, ForeignKey("ai_keywords.ai_keywords_id"), nullable=False)
+    ai_keyword_id = Column(Integer, ForeignKey("ai_keyword.ai_keyword_id"), nullable=False)
     product_id = Column(Integer, ForeignKey("product.product_id"), nullable=False)
     rank = Column(Numeric(10,2), nullable=False)
 
