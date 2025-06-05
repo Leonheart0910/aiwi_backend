@@ -14,4 +14,8 @@ class AiwiOut(BaseModel):
     updated_at: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class AiwiHistoryResponse(BaseModel):
+    chat_id: int
+    title: str

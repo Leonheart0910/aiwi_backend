@@ -14,4 +14,4 @@ class User(base):
 
     user_info = relationship("UserInfo", back_populates="user", uselist=False, cascade="all, delete-orphan")
     collections = relationship("Collection", back_populates="user")
-    aiwis = relationship("Aiwi", back_populates="user")
+    aiwi = relationship("Aiwi", back_populates="user")

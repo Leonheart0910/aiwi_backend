@@ -33,6 +33,8 @@ class ErrorCode(Enum):
     ITEM_IN_COLLECTION_DELETE_FAIL = 9002
     ITEM_IN_COLLECTION_INFORMATION_FAIL = 9003
 
+    INTERNAL_SERVER_ERROR = 10000
+
 class OperatedException(HTTPException):
     def __init__(self, status_code: int, error_code: ErrorCode, detail: str):
         super().__init__(status_code=status_code, detail=detail)

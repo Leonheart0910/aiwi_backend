@@ -6,23 +6,23 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from typing import List
 
-
-def create_image(db: Session, item_id: int, image_files: List[UploadFile]):
-    for image_file in image_files:
-        ext = image_file.filename.split('.')[-1]
-        filename = f"{uuid.uuid4()}.{ext}"
-        img_url = upload_to_s3(image_file, filename)
-        image = Image(
-            item_id=item_id,
-            img_url=img_url
-        )
-        try:
-            db.add(image)
-        except Exception as e:
-            db.rollback()
-            print(f"[Image 저장 실패] {e}")
-            continue
-    db.commit()
+#
+# def create_image(db: Session, item_id: int, image_files: List[UploadFile]):
+#     for image_file in image_files:
+#         ext = image_file.filename.split('.')[-1]
+#         filename = f"{uuid.uuid4()}.{ext}"
+#         img_url = upload_to_s3(image_file, filename)
+#         image = Image(
+#             item_id=item_id,
+#             img_url=img_url
+#         )
+#         try:
+#             db.add(image)
+#         except Exception as e:
+#             db.rollback()
+#             print(f"[Image 저장 실패] {e}")
+#             continue
+#     db.commit()
 
 
 
