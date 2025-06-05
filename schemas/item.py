@@ -35,3 +35,8 @@ class ItemInfo(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ItemSaveRequest(BaseModel):
+    user_id: int
+    product_id: int
+    collection_id : int

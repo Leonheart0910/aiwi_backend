@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from db.database import base
+from models.ai_seo_keyword import AiSeoKeyword
 
 class ChatLog(base):
 
@@ -13,7 +14,8 @@ class ChatLog(base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    aiwi = relationship("Aiwi", backref="chat_logs")
-
-
+    aiwi = relationship("Aiwi", back_populates="chat_log")
+    ai_seo_keyword = relationship(AiSeoKeyword, back_populates="chat_log")
+    ai_keyword = relationship("AiKeyword", back_populates="chat_log")
+    ai_recommend = relationship("AiRecommend", back_populates="chat_log")
 

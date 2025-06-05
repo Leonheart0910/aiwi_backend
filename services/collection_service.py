@@ -2,13 +2,19 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
-from api.message.error_message import ErrorMessage
+from constant.message.error_message import ErrorMessage
 from exception.exception import OperatedException, ErrorCode
+from models import item as Item
+from models.product import Product
+from schemas.cart_response import CartResponse, ItemOut, CollectionOut
 from schemas.collection import CollectionCreate, CollectionResponse, CollectionItemList
 from crud.collection import create_collection, delete_collection_by_id, get_collection_with_items, \
     delete_collection_items_by_id
-from schemas.image import ImageInfo
+from schemas.collection_summary import CollectionSummaryOut
+
 from schemas.item import ItemInfo
+from models import collection as Collection
+from schemas.collection_item_list import *
 
 
 def collection_create_service(
@@ -60,49 +66,51 @@ def collection_delete_service(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def get_collection_items_service(
-        collection_id: int,
-        db: Session
-):
-    try:
-        info_list = get_collection_with_items(collection_id=collection_id, db=db)
+def get_collection_items_service(collection_id: int, db: Session) -> CollectionItemList:
+    # ① joinedload로 한 번에 끌어오기
+    coll: Collection = get_collection_with_items(db, collection_id)
 
-        if not info_list:
-            raise OperatedException(
-                status_code=404,
-                error_code=ErrorCode.COLLECTION_ITEMS_INFORMATION_FAIL.value,
-                detail=ErrorMessage.COLLECTION_ITEMS_INFORMATION_FAIL.value
-            )
-
-        return CollectionItemList(
-            collection_id=info_list.collection_id,
-            collection_title=info_list.collection_title,
-            user_id=info_list.user_id,
-            created_at=info_list.created_at,
-            items=[
-                ItemInfo(
-                    item_id=item.item_id,
-                    category_name=item.category_name,
-                    product_name=item.product_name,
-                    product_info=item.product_info,
-                    created_at=item.created_at,
-                    image=[
-                        ImageInfo(
-                            item_id=image.item_id,
-                            img_url=image.img_url,
-                            created_at=image.created_at
-                        ) for image in item.images
-                    ]
-                ) for item in info_list.items
-            ]
+    if coll is None:
+        raise OperatedException(
+            status_code=404,
+            error_code=ErrorCode.COLLECTION_NOT_FOUND.value,
+            detail=ErrorMessage.COLLECTION_NOT_FOUND.value
         )
 
-    except OperatedException:
-        raise OperatedException(
-            status_code=500,
-            error_code=ErrorCode.ITEM_IN_COLLECTION_INFORMATION_FAIL.value,
-            detail=ErrorMessage.ITEM_IN_COLLECTION_INFORMATION_FAIL.value
+    # ② DTO로 변환
+    items_dto: list[ItemInfo] = []
+    for item in coll.items:
+        info = item.product.product_info
+        img_obj = item.product.images[0] if item.product.images else None
+        image_dto = (
+            ImageInfo(
+                image_id=img_obj.image_id,
+                image_url=img_obj.img_url,
+                created_at=img_obj.created_at
             )
+            if img_obj else None
+        )
+
+        items_dto.append(
+            ItemInfo(
+                item_id=item.item_id,
+                product_name=info.product_name,
+                product_info=info.product_info,   # 예: "면 100%, 흰색"
+                product_link=info.product_link,
+                category_name=item.category_name, # Item 모델에 정의된 속성
+                created_at=item.created_at,
+                image=image_dto
+            )
+        )
+
+    return CollectionItemList(
+        collection_id=coll.collection_id,
+        collection_title=coll.collection_title,
+        user_id=coll.user_id,
+        created_at=coll.created_at,
+        items=items_dto
+    )
+
 
 def delete_collection_item_service(
     collection_id: int,
@@ -117,3 +125,78 @@ def delete_collection_item_service(
             error_code=ErrorCode.ITEM_IN_COLLECTION_DELETE_FAIL.value,
             detail=ErrorMessage.ITEM_IN_COLLECTION_DELETE_FAIL.value
         )
+
+def add_item_service(
+    user_id: int,
+    collection_id: id,
+    product_id: int,
+    db: Session
+) -> CartResponse:
+
+    collection = (
+        db.query(Collection)
+        .filter(Collection.user_id == user_id,
+                Collection.collection_id == collection_id)
+        .first()
+    )
+    if collection is None:
+        collection = create_collection(db=db,
+                                       collection = CollectionCreate(collection_title="임의 장바구니",user_id=user_id))
+    # 2. 아이템 저장
+    item = Item(
+        collection_id=collection.collection_id,
+        product_id=product_id)
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+
+    # 3. 방금 저장한 아이템 + 상품 정보 로딩
+    from sqlalchemy.orm import selectinload
+    item_row = (
+        db.query(Item)
+        .options(
+            selectinload(Item.product)
+            .selectinload(Product.product_info)   # ← ⭐ 클래스 말고 속성
+        )
+        .filter(Item.item_id == item.item_id)
+        .one()
+    )
+
+    info = item_row.product.product_info[0] if item_row.product.product_info else None
+
+    item_dto = ItemOut(
+        item_id=item_row.item_id,
+        item_name=info.product_name if info else "",
+        created_at=item_row.created_at,
+        updated_at=item_row.updated_at,
+    )
+
+    col_dto = CollectionOut(
+        collection_id=collection.collection_id,
+        collection_title=collection.collection_title,
+        created_at=collection.created_at,
+        updated_at=collection.updated_at,
+    )
+
+    return CartResponse(
+        user_id=user_id,
+        collection=[col_dto],
+        item=[item_dto],
+    )
+
+
+def get_collection_list_service(
+    user_id: int,
+    db: Session
+) -> list[CollectionSummaryOut]:
+    from sqlalchemy.orm import load_only
+    collections = (
+        db.query(Collection)
+          .options(load_only(Collection.collection_id,
+                            Collection.collection_title,
+                            Collection.updated_at))
+          .filter(Collection.user_id == user_id)
+          .order_by(Collection.updated_at.desc())
+          .all()
+    )
+    return collections

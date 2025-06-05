@@ -12,4 +12,5 @@ class Aiwi(base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    user = relationship("User", backref="aiwis")
+    user = relationship("User", back_populates="aiwi")
+    chat_log = relationship("ChatLog", back_populates="aiwi")

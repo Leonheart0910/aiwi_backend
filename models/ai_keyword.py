@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, SmallInteger, DateTime, func
 from sqlalchemy.orm import relationship
 
-from database import Base
+from db.database import base
 
 
-class AiKeyword(Base):
+class AiKeyword(base):
 
     __tablename__ = "ai_keyword"
     ai_keyword_id = Column(Integer, primary_key=True, nullable=False)
@@ -14,4 +14,5 @@ class AiKeyword(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    chat_log = relationship("Chat_log", backref="ai_keyword")
+    chat_log = relationship("ChatLog", back_populates="ai_keyword")
+    ai_product = relationship("AiProduct", back_populates="ai_keyword")

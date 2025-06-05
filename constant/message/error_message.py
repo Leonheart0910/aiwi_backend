@@ -20,3 +20,5 @@ class ErrorMessage(Enum):
         COLLECTION_CREATE_FAIL = "장바구니 생성에 실패하였습니다."
         COLLECTION_DELETE_FAIL = "장바구니 삭제에 실패하였습니다."
         COLLECTION_NOT_FOUND = "장바구니를 찾을 수 없습니다."
+
+        INTERNAL_SERVER_ERROR = "오류가 발생했습니다."

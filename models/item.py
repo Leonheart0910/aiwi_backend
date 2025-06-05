@@ -11,5 +11,5 @@ class Item(base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    collection = relationship("Collection", backref="items")
-    product = relationship("Product", backref="items")
+    collection = relationship("Collection", back_populates="item")
+    product = relationship("Product", back_populates="item")

@@ -11,4 +11,4 @@ class Image(base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    product = relationship("Product", backref="images")
+    product = relationship("Product", back_populates="image")

@@ -1,12 +1,11 @@
-from api.message.error_message import ErrorMessage
-from api.message.success_message import SuccessMessage
+from constant.message.error_message import ErrorMessage
+from constant.message.success_message import SuccessMessage
 from exception.exception import OperatedException, ErrorCode
-from schemas.user import UserCreate, UserLoginRequest, UserInformationResponse
+from schemas.user import UserCreate, UserInformationResponse
 from schemas.user_info import UserInfoCreate, UserInfoOut
 from crud.user import create_user, delete_user
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
-from models import User
+from models import user as User
 def user_login_service(email: str,
                        password: str,
                        db: Session):
@@ -66,6 +65,7 @@ def user_withdraw_service(user_id: int,
                 detail= ErrorMessage.USER_WITHDRAW_FAIL.value
             )
         else:
+            delete_user(db=db, user_id=user_id)
             return {
                 "status" : "ok",
                 "message" : SuccessMessage.WITHDRAW_SUCCESS

@@ -12,6 +12,6 @@ class User(base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    user_info = relationship("UserInfo", backref="user", uselist=False, cascade="all, delete-orphan")
-    collections = relationship("Collection", backref="user")
-    aiwis = relationship("Aiwi", backref="user")
+    user_info = relationship("UserInfo", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    collections = relationship("Collection", back_populates="user")
+    aiwi = relationship("Aiwi", back_populates="user")

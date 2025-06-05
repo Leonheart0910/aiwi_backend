@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
+
+from schemas.product import ProductInfo
+from schemas.recommend import RecommendInfo
+
 
 class AiwiLogCreate(BaseModel):
     user_input: str
@@ -19,5 +23,17 @@ class AiwiLogOut(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
+class AiwiLogHistory(BaseModel):
+    chat_log_id: int
+    user_input: str
+    keyword_text: str
+    seo_keyword_text:str
+    products: List[ProductInfo]
+    recommend: List[RecommendInfo]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
     class Config:
         from_attributes = True
