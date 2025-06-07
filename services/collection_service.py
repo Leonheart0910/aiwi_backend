@@ -162,7 +162,7 @@ def add_item_service(
         .one()
     )
 
-    info = item_row.product.product_info[0] if item_row.product.product_info else None
+    info = item_row.product.product_info
 
     item_dto = ItemOut(
         item_id=item_row.item_id,
