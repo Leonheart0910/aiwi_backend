@@ -67,7 +67,6 @@ def collection_delete_service(
         raise HTTPException(status_code=500, detail=str(e))
 
 def get_collection_items_service(collection_id: int, db: Session) -> CollectionItemList:
-    # ① joinedload로 한 번에 끌어오기
     coll: Collection = get_collection_with_items(db, collection_id)
 
     if coll is None:
@@ -77,7 +76,6 @@ def get_collection_items_service(collection_id: int, db: Session) -> CollectionI
             detail=ErrorMessage.COLLECTION_NOT_FOUND.value
         )
 
-    # ② DTO로 변환
     items_dto: list[ItemInfo] = []
     for item in coll.items:
         info = item.product.product_info
@@ -95,9 +93,9 @@ def get_collection_items_service(collection_id: int, db: Session) -> CollectionI
             ItemInfo(
                 item_id=item.item_id,
                 product_name=info.product_name,
-                product_info=info.product_info,   # 예: "면 100%, 흰색"
+                product_info=info.product_info,
                 product_link=info.product_link,
-                category_name=item.category_name, # Item 모델에 정의된 속성
+                category_name=item.category_name,
                 created_at=item.created_at,
                 image=image_dto
             )

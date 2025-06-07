@@ -10,7 +10,8 @@ class Collection(base):
     user_id = Column(Integer, ForeignKey("users.user_id"), unique=False, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    item = relationship("Item", back_populates="collection", cascade="all, delete-orphan")
+
+    items = relationship("Item", back_populates="collection", cascade="all, delete-orphan")
     user = relationship("User", back_populates="collections")
 
 

@@ -23,7 +23,10 @@ def get_collection_with_items(db: Session, collection_id: int):
         .options(
             joinedload(Collection.items).
             joinedload(Item.product).
-            joinedload(Product.product_info).
+            joinedload(Product.product_info),
+
+            joinedload(Collection.items).
+            joinedload(Item.product).
             joinedload(Product.image)
         )\
         .filter(Collection.collection_id == collection_id)\
