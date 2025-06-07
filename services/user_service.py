@@ -5,7 +5,8 @@ from schemas.user import UserCreate, UserInformationResponse
 from schemas.user_info import UserInfoCreate, UserInfoOut
 from crud.user import create_user, delete_user
 from sqlalchemy.orm import Session
-from models import user as User
+from models.user import User
+
 def user_login_service(email: str,
                        password: str,
                        db: Session):
