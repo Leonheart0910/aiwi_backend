@@ -5,6 +5,7 @@ from schemas.chat import Node1Output, Node2Output, Node4Output
 
 
 def create_chat(
+    chat_id : str,
     user_id: int,
     node1_response: Node1Output,
     node2_response: Node2Output,
@@ -13,6 +14,7 @@ def create_chat(
 ):
     try:
         chat = Aiwi(
+            chat_id = chat_id,
             title = node1_response["question"],
             user_id=user_id,
         )
@@ -38,3 +40,9 @@ def create_chat(
         return chat
     except Exception as e:
         raise e
+
+def chat_exist(chat_id: str,
+               db: Session):
+    return db.query(Aiwi).filter(Aiwi.chat_id == chat_id).first() is not None
+
+
