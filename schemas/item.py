@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel
+from sqlalchemy.dialects.mysql import BIGINT
 
 from schemas.image import ImageOut, ImageInfo
 
@@ -40,3 +41,4 @@ class ItemSaveRequest(BaseModel):
     user_id: int
     product_id: int
     collection_id : int
+

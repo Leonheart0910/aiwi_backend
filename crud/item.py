@@ -1,4 +1,4 @@
-
+from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.orm import joinedload
 from models.item import Item
 from schemas.item import CreateItem
@@ -26,17 +26,26 @@ from crud.images import create_images
 
 def find_item_by_id(db: Session, item_id: int):
     item = db.query(Item)\
-        .options(joinedload(Item.images))\
+        .options(joinedload(Item.image))\
         .filter(Item.item_id == item_id)\
         .first()
     return item
 
 def delete_item_by_id(db: Session, item_id: int):
     item = db.query(Item).filter(Item.item_id == item_id).first()
-    if item:
-        images = db.query(Image).filter(Image.item_id == item.item_id).all()
-        for image in images:
-            delete_image_by_id(db, image.image_id)
-        db.delete(item)
-        db.commit()
+    db.delete(item)
+    db.commit()
+    return item
+
+def create_item(
+        db: Session,
+        collection_id: int,
+        product_id: int,)-> Item:
+    item = Item(
+        collection_id=collection_id,
+        product_id=product_id,
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
     return item

@@ -12,7 +12,7 @@ from services.naver_api import search_naver_shopping
 from crud.aiwi import create_aiwi
 from crud.aiwi_log import create_aiwi_log
 load_dotenv()
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 def gemini_search(query: str) -> str:

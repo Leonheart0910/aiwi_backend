@@ -40,7 +40,7 @@ def build_chat_response(chat_id: int, db: Session) -> ChatOut:
         for k in log.ai_keyword:                 # ← 수정 ①
             for ap in k.ai_product:              # ← 수정 ②
                 p = ap.product
-                img: Image | None = p.images[0] if p.images else None
+                img: Image | None = p.image[0] if p.image else None
                 info = p.product_info[0] if p.product_info else None
 
                 products.append(
@@ -64,7 +64,7 @@ def build_chat_response(chat_id: int, db: Session) -> ChatOut:
         recommends = [
             RecommendOut(
                 recommend_id=r.ai_recommend_id,
-                recommend_text=r.recommend,
+                recommend_text=r.recommend_text,
                 rank=r.rank,
             )
             for r in log.ai_recommend

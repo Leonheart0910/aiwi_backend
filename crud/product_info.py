@@ -20,3 +20,5 @@ def create_product_info(
     db.add(product_info)
     db.commit()
     db.refresh(product_info)
+
+    return product_info

@@ -22,7 +22,7 @@ def create_chat_log(
     node2_response: Node2Output,
     node4_response: Node4Output,
     db: Session,
-    keyword_temp=None
+    keyword_temp
 ):
     try:
         chat_log = ChatLog(
@@ -34,7 +34,7 @@ def create_chat_log(
         db.commit()
         db.refresh(chat_log)
 
-        for i in range(1, len(node1_response.keywords) + 1):
+        for i in range(1, len(node1_response["keywords"]) + 1):
             ai_keyword = create_ai_keyword(
                 chat_log_id=chat_log.chat_log_id,
                 keyword=keyword_temp[i - 1],
@@ -44,20 +44,22 @@ def create_chat_log(
 
             plus = Decimal("0.1")
 
-            for group in node2_response.search_results:
-                if group["keyword"] == ai_keyword.keyword:
+            for group in node2_response["search_results"]:
+                if ai_keyword and group["keyword"] == ai_keyword.keyword:
                     for item in group["items"]:
                         try:
                             product_id = int(item["productId"])
                             price = float(item["lprice"])
-                        except (ValueError, TypeError):
-                            continue  # 건너뜀
+                        except (ValueError, TypeError, KeyError) as e:
+                            print(f"[상품 저장 실패] item: {item}, error: {e}")
+                            raise OperatedException(500, ErrorCode.INTERNAL_SERVER_ERROR.value, f"상품 파싱 실패: {e}")
 
                         if product_exists(product_id=product_id, db=db):
                             create_ai_product(
                                 ai_keyword_id=ai_keyword.ai_keyword_id,
                                 product_id=product_id,
-                                rank=float(i) + float(plus)
+                                rank=Decimal(i) + Decimal(plus),
+                                db = db
                             )
                             plus += Decimal("0.1")
                         else:
@@ -78,6 +80,14 @@ def create_chat_log(
                                 db=db
                             )
 
+                            create_ai_product(
+                                ai_keyword_id=ai_keyword.ai_keyword_id,
+                                product_id=product_id,
+                                rank=Decimal(i) + Decimal(plus),
+                                db=db
+                            )
+                            plus += Decimal("0.1")
+
             create_ai_seo_keyword(
                 chat_log_id=chat_log.chat_log_id,
                 seo_keyword=keyword_temp[i - 1],
@@ -87,7 +97,7 @@ def create_chat_log(
 
             create_ai_recommend(
                 chat_log_id=chat_log.chat_log_id,
-                recommend=node4_response.recommendations[i - 1].summary,
+                recommend_text=node4_response["recommendations"][i - 1]["summary"],
                 rank=i,
                 db=db
             )
@@ -95,7 +105,6 @@ def create_chat_log(
         return chat_log
 
     except Exception as e:
-        db.rollback()
         raise OperatedException(
             status_code=500,
             error_code=ErrorCode.INTERNAL_SERVER_ERROR.value,

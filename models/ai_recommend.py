@@ -9,7 +9,7 @@ class AiRecommend(base):
     __tablename__ = "ai_recommend"
     ai_recommend_id = Column(Integer, primary_key=True)
     chat_log_id = Column(Integer, ForeignKey("chat_log.chat_log_id"), nullable=False)
-    recommend = Column(Text, nullable=False)
+    recommend_text = Column(Text, nullable=False)
     rank = Column(Integer, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

@@ -13,6 +13,7 @@ def create_product(
     db.add(product)
     db.commit()
     db.refresh(product)
+    return product
 
 def product_exists(product_id: int,
                    db: Session
