@@ -50,7 +50,7 @@ class ChatLogOut(BaseModel):
 
 
 class ChatOut(BaseModel):
-    chat_id: int
+    chat_id: str
     title: str
     chat_log: List[ChatLogOut]
     created_at: datetime

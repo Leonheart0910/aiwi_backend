@@ -12,7 +12,7 @@ from schemas.chat_response import (
 )
 
 
-def build_chat_response(chat_id: int, db: Session) -> ChatOut:
+def build_chat_response(chat_id: str, db: Session) -> ChatOut:
     chat: Optional[Aiwi] = (
         db.query(Aiwi)
         .options(

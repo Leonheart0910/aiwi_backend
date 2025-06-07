@@ -1,7 +1,9 @@
+from http.client import HTTPException
+
 from sqlalchemy.orm import Session, load_only
 from api.dto_builder.chat_log_response_builder import build_chat_log_response
 from core.aiwi import generate_checklist, search_naver_items, compare_and_recommend
-from crud.chat import create_chat
+from crud.chat import create_chat, chat_exist
 from crud.chat_log import create_chat_log
 from models.aiwi import Aiwi
 from schemas.chat_list import ChatList
@@ -9,7 +11,7 @@ from schemas.chat_response import ChatOut
 
 
 def chat_input_service(
-        chat_id: int,
+        chat_id: str,
         user_input: str,
         user_id: int,
         db: Session
@@ -27,9 +29,10 @@ def chat_input_service(
             "search_results": node2_resp["search_results"]
         })
 
-        if chat_id is -1:
+        if chat_exist(chat_id =chat_id, db = db) is False:
             chat = create_chat(
                 user_id=user_id,
+                chat_id=chat_id,
                 node1_response=node1_resp,
                 node2_response=node2_resp,
                 node4_response=node4_resp,
@@ -71,8 +74,8 @@ def chat_input_service(
             updated_at=chat_meta.updated_at,
         )
 
-    except Exception:
-        raise Exception
+    except Exception as e:
+        raise HTTPException(500, str(e))
 
 def chat_list_service(
         user_id: int,

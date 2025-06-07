@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get("/chat/{chat_id}/{user_id}/{user_input}")
 def chat_input(
-        chat_id: int,
+        chat_id: str,
         user_input: str,
         user_id: int,
         db: Session = Depends(get_db)
@@ -22,7 +22,7 @@ def chat_input(
                                   db=db)
 @router.get("/chat/{chat_id}")
 def chat_history(
-        chat_id: int,
+        chat_id: str,
         db: Session = Depends(get_db)
 ):
     return build_chat_response(chat_id=chat_id, db = db)

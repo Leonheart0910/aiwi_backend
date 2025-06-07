@@ -16,7 +16,7 @@ from schemas.chat import Node1Output, Node2Output, Node4Output
 
 def create_chat_log(
     user_input: str,
-    chat_id: int,
+    chat_id: str,
     keyword_full_text: str,
     node1_response: Node1Output,
     node2_response: Node2Output,
