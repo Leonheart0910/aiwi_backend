@@ -40,8 +40,8 @@ def build_chat_response(chat_id: str, db: Session) -> ChatOut:
         for k in log.ai_keyword:                 # ← 수정 ①
             for ap in k.ai_product:              # ← 수정 ②
                 p = ap.product
-                img: Image | None = p.image[0] if p.image else None
-                info = p.product_info[0] if p.product_info else None
+                img: Image | None = p.image if p.image else None
+                info = p.product_info if p.product_info else None
 
                 products.append(
                     ProductOut(
