@@ -28,9 +28,10 @@ class ItemOut(BaseModel):
 
 class ItemInfo(BaseModel):
     item_id : int
-    category_name : str
+    product_link : str
     product_name : str
     product_info : str
+    category_name: str
     image: List[ImageInfo] = []
     created_at : Optional[datetime]
 
