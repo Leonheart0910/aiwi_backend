@@ -11,6 +11,6 @@ class Collection(base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     item = relationship("Item", back_populates="collection", cascade="all, delete-orphan")
-    user = relationship("User", back_populates="collection")
+    user = relationship("User", back_populates="collections")
 
 

@@ -33,10 +33,6 @@ def find_item_by_id(db: Session, item_id: int):
 
 def delete_item_by_id(db: Session, item_id: int):
     item = db.query(Item).filter(Item.item_id == item_id).first()
-    if item:
-        images = db.query(Image).filter(Image.item_id == item.item_id).all()
-        for image in images:
-            delete_image_by_id(db, image.image_id)
-        db.delete(item)
-        db.commit()
+    db.delete(item)
+    db.commit()
     return item

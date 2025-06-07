@@ -31,11 +31,8 @@ def get_collection_with_items(db: Session, collection_id: int):
 
 def delete_collection_by_id(db: Session, collection_id: int):
     collection = db.query(Collection).filter(Collection.collection_id == collection_id).first()
-    if collection:
-        for item in collection.items:
-            delete_item_by_id(db, item.item_id)
-        db.delete(collection)
-        db.commit()
+    db.delete(collection)
+    db.commit()
     return collection
 
 def delete_collection_items_by_id(db: Session,
