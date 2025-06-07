@@ -12,6 +12,6 @@ class Product(base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     item = relationship("Item", back_populates="product", cascade="all, delete-orphan")
-    product_info = relationship("ProductInfo", back_populates="product", cascade="all, delete-orphan")
-    image = relationship("Image", back_populates="product", cascade="all, delete-orphan")
+    product_info = relationship("ProductInfo", back_populates="product", cascade="all, delete-orphan", uselist=False)
+    image = relationship("Image", back_populates="product", cascade="all, delete-orphan", uselist=False)
     ai_product = relationship("AiProduct", back_populates="product", cascade="all, delete-orphan")

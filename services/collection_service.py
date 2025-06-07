@@ -81,7 +81,7 @@ def get_collection_items_service(collection_id: int, db: Session) -> CollectionI
     items_dto: list[ItemInfo] = []
     for item in coll.items:
         info = item.product.product_info
-        img_obj = item.product.images[0] if item.product.images else None
+        img_obj = item.product.image
         image_dto = (
             ImageInfo(
                 image_id=img_obj.image_id,
@@ -95,9 +95,9 @@ def get_collection_items_service(collection_id: int, db: Session) -> CollectionI
             ItemInfo(
                 item_id=item.item_id,
                 product_name=info.product_name,
-                product_info=info.product_info,
+                product_info=info.product_name,
                 product_link=info.product_link,
-                category_name=item.category_name,
+                category_name=info.product_name,
                 created_at=item.created_at,
                 image=image_dto
             )
