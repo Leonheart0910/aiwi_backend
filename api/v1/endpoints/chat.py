@@ -27,7 +27,7 @@ def chat_history(
 ):
     return build_chat_response(chat_id=chat_id, db = db)
 
-@router.get("/chat/{user_id})")
+@router.get("/chat/user/{user_id}")
 def chat_list(
         user_id: int,
         db: Session = Depends(get_db)

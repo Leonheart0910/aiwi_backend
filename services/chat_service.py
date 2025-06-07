@@ -4,6 +4,7 @@ from core.aiwi import generate_checklist, search_naver_items, compare_and_recomm
 from crud.chat import create_chat
 from crud.chat_log import create_chat_log
 from models.aiwi import Aiwi
+from schemas.chat_list import ChatList
 from schemas.chat_response import ChatOut
 
 
@@ -26,7 +27,7 @@ def chat_input_service(
             "search_results": node2_resp["search_results"]
         })
 
-        if chat_id is None:
+        if chat_id is -1:
             chat = create_chat(
                 user_id=user_id,
                 node1_response=node1_resp,
@@ -35,7 +36,7 @@ def chat_input_service(
                 db=db
             )
             chat_id = chat.chat_id
-            new_log_id = chat.chat_logs[0].chat_log_id
+            new_log_id = chat.chat_log[0].chat_log_id
         else:
             kw_temp = [k["keyword"] for k in node1_resp["keywords"]]
             kw_full = node1_resp["checklist_message"] + "\n" + ", ".join(kw_temp)
@@ -83,4 +84,5 @@ def chat_list_service(
         .order_by(Aiwi.updated_at.desc())
         .all()
     )
-    return chats
+    return [ChatList(chat_id=c.chat_id, title=c.title, updated_at=c.updated_at) for c in chats]
+

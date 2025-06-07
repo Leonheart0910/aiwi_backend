@@ -25,7 +25,7 @@ def create_chat(
         keyword_full_text = node1_response["checklist_message"] + "\n" + ", ".join(keyword_temp)
 
         chat_log = create_chat_log(
-            user_input=node1_response.question,
+            user_input=node1_response["question"],
             chat_id=chat.chat_id,
             keyword_full_text=keyword_full_text,
             node1_response=node1_response,
