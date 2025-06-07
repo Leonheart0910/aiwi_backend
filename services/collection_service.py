@@ -189,26 +189,28 @@ def get_collection_list_service(
     user_id: int,
     db: Session
 ) -> list[CollectionSummaryOut]:
-
-
+    from sqlalchemy import case
     collections = (
         db.query(Collection)
-          .options(load_only(Collection.collection_id,
-                            Collection.collection_title,
-                            Collection.updated_at))
-          .filter(Collection.user_id == user_id)
-          .order_by(Collection.updated_at.desc().nulls_last())
-          .all()
+        .options(load_only(Collection.collection_id,
+                           Collection.collection_title,
+                           Collection.updated_at))
+        .filter(Collection.user_id == user_id)
+        .order_by(
+            case((Collection.updated_at == None, 1), else_=0),
+            Collection.updated_at.desc()
+        )
+        .all()
     )
-    result = []
-    for c in collections:
-        result.append(CollectionSummaryOut(
+    return [
+        CollectionSummaryOut(
             collection_id=c.collection_id,
             title=c.collection_title,
             updated_at=c.updated_at
-        ))
+        )
+        for c in collections
+    ]
 
-    return result
 
 def register_item_in_collection_service(
         user_id: int,

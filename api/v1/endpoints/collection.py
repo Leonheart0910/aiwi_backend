@@ -58,7 +58,7 @@ def delete_collection_item(
 ):
     return delete_collection_item_service(collection_id=collection_id, item_id=item_id, db=db)
 
-@router.get("/collection/{user_id}")
+@router.get("/collection/list/{user_id}")
 def get_collection_list(
         user_id: int,
         db: Session = Depends(get_db)
