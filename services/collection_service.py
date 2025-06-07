@@ -4,7 +4,7 @@ from fastapi import HTTPException
 
 from constant.message.error_message import ErrorMessage
 from exception.exception import OperatedException, ErrorCode
-from models import item as Item
+from models.item import Item
 from models.product import Product
 from schemas.cart_response import CartResponse, ItemOut, CollectionOut
 from schemas.collection import CollectionCreate, CollectionResponse, CollectionItemList
@@ -13,9 +13,10 @@ from crud.collection import create_collection, delete_collection_by_id, get_coll
 from schemas.collection_summary import CollectionSummaryOut
 
 from schemas.item import ItemInfo
-from models import collection as Collection
+from models.collection import Collection
 from schemas.collection_item_list import *
-
+import logging
+from sqlalchemy.orm import load_only
 
 def collection_create_service(
         user_id: int,
@@ -187,14 +188,23 @@ def get_collection_list_service(
     user_id: int,
     db: Session
 ) -> list[CollectionSummaryOut]:
-    from sqlalchemy.orm import load_only
+
+
     collections = (
         db.query(Collection)
           .options(load_only(Collection.collection_id,
                             Collection.collection_title,
                             Collection.updated_at))
           .filter(Collection.user_id == user_id)
-          .order_by(Collection.updated_at.desc())
+          .order_by(Collection.updated_at.desc().nulls_last())
           .all()
     )
-    return collections
+    result = []
+    for c in collections:
+        result.append(CollectionSummaryOut(
+            collection_id=c.collection_id,
+            title=c.collection_title,
+            updated_at=c.updated_at
+        ))
+
+    return result

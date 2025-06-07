@@ -60,6 +60,8 @@ def delete_collection_item(
 def get_collection_list(
         user_id: int,
         db: Session = Depends(get_db)):
-    get_collection_list_service(
+
+    return get_collection_list_service(
         user_id=user_id,
         db=db)
+
