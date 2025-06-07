@@ -5,8 +5,8 @@ certifi==2025.4.26
 charset-normalizer==3.4.2
 click==8.2.0
 fastapi==0.115.12
-google-ai-generativelanguage==0.6.15
-google-api-core==2.25.0rc1
+# google-ai-generativelanguage==0.6.15
+google-api-core
 google-api-python-client==2.169.0
 google-auth==2.40.1
 google-auth-httplib2==0.2.0
@@ -42,7 +42,7 @@ urllib3==2.4.0
 uvicorn==0.34.2
 
 boto3~=1.38.15
-langchain-google-genai~=2.1.5
+# langchain-google-genai~=2.1.5
 langgraph~=0.4.8
 langchain-core~=0.3.64
 exception~=0.1.0
