@@ -6,12 +6,12 @@ from models.ai_recommend import AiRecommend
 def create_ai_recommend(
         db:Session,
         chat_log_id: int,
-        recommend: str,
+        recommend_text: str,
         rank: int
 ):
     ai_recommend = AiRecommend(
         chat_log_id=chat_log_id,
-        recommend=recommend,
+        recommend_text=recommend_text,
         rank=rank
     )
     db.add(ai_recommend)

@@ -17,3 +17,4 @@ def create_ai_keyword(
     db.add(ai_keyword)
     db.commit()
     db.refresh(ai_keyword)
+    return ai_keyword

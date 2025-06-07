@@ -19,7 +19,7 @@ def build_chat_log_response(chat_log_id: int, db: Session) -> ChatLogOut:
             selectinload(ChatLog.ai_keyword)
             .selectinload(AiKeyword.ai_product)
             .selectinload(AiProduct.product)
-            .selectinload(Product.images),
+            .selectinload(Product.image),
 
             selectinload(ChatLog.ai_recommend),
             selectinload(ChatLog.ai_seo_keyword),
@@ -36,7 +36,7 @@ def build_chat_log_response(chat_log_id: int, db: Session) -> ChatLogOut:
     for k in log.ai_keyword:
         for ap in k.ai_product:
             p = ap.product
-            img: Image | None = p.images[0] if p.images else None
+            img: Image | None = p.image[0] if p.image else None
             info = p.product_info[0] if p.product_info else None
 
             products.append(
@@ -61,7 +61,7 @@ def build_chat_log_response(chat_log_id: int, db: Session) -> ChatLogOut:
     recommends = [
         RecommendOut(
             recommend_id=r.ai_recommend_id,
-            recommend_text=r.recommend,
+            recommend_text=r.recommend_text,
             rank=r.rank,
         )
         for r in log.ai_recommend

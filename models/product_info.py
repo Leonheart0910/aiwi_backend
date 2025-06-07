@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Float, DateTime, func
+from sqlalchemy import Column, Integer, ForeignKey, String, Float, DateTime, func, BIGINT
 from sqlalchemy.orm import relationship
 
 from db.database import base
@@ -8,7 +8,7 @@ class ProductInfo(base):
 
     __tablename__ = "product_info"
     product_info_id = Column(Integer, primary_key=True, nullable=False)
-    product_id = Column(Integer, ForeignKey("product.product_id"),nullable=False)
+    product_id = Column(BIGINT, ForeignKey("product.product_id"),nullable=False)
     product_name = Column(String(255), nullable=False)
     product_link = Column(String(255), nullable=False)
     product_price = Column(Float, nullable=False)

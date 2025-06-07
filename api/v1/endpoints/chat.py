@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from api.dto_builder.chat_response_builder import build_chat_response
 from core.dependencies import get_db
-from schemas.chat import ChatInput
 from services.chat_service import chat_input_service, chat_list_service
 
 router = APIRouter()
@@ -17,7 +16,7 @@ def chat_input(
         user_id: int,
         db: Session = Depends(get_db)
 ):
-    response = chat_input_service(chat_id=chat_id,
+    return chat_input_service(chat_id=chat_id,
                                   user_input=user_input,
                                   user_id=user_id,
                                   db=db)

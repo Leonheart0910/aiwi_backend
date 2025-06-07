@@ -41,3 +41,4 @@ def create_images(
     db.add(images)
     db.commit()
     db.refresh(images)
+    return images

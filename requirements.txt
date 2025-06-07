@@ -40,3 +40,15 @@ typing_extensions==4.13.2
 uritemplate==4.1.1
 urllib3==2.4.0
 uvicorn==0.34.2
+
+boto3~=1.38.15
+langchain-google-genai~=2.1.5
+langgraph~=0.4.8
+langchain-core~=0.3.64
+exception~=0.1.0
+pip~=24.3.1
+argparse~=1.4.0
+google~=3.0.0
+filelock~=3.18.0
+packaging~=24.2
+typing_extensions~=4.13.2
