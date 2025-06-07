@@ -26,3 +26,5 @@ class Node2Output(BaseModel):
 class Node4Output(BaseModel):
     search_results: List[Dict[str, Any]]  # 필요 시 더 정교하게 정의 가능
     recommendations: List[Recommendation]
+
+

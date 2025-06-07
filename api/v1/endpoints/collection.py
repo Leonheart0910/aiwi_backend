@@ -5,8 +5,10 @@ from sqlalchemy.orm import Session
 
 from core.dependencies import get_db
 from schemas.collection import CollectionCreateRequest
+from schemas.item import ItemSaveRequest
 from services.collection_service import collection_create_service, get_collection_items_service, \
-    delete_collection_item_service, collection_delete_service, get_collection_list_service
+    delete_collection_item_service, collection_delete_service, get_collection_list_service, \
+    register_item_in_collection_service
 
 router = APIRouter()
 
@@ -59,9 +61,21 @@ def delete_collection_item(
 @router.get("/collection/{user_id}")
 def get_collection_list(
         user_id: int,
-        db: Session = Depends(get_db)):
+        db: Session = Depends(get_db)
+):
 
     return get_collection_list_service(
         user_id=user_id,
         db=db)
 
+@router.post("/collection/register")
+def register_item_in_collection(
+        request : ItemSaveRequest,
+        db : Session = Depends(get_db)
+):
+    return register_item_in_collection_service(
+        user_id=request.user_id,
+        collection_id=request.collection_id,
+        product_id= request.product_id,
+        db=db
+    )

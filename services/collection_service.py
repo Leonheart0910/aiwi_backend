@@ -1,8 +1,9 @@
-
+from sqlalchemy import BIGINT
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 from constant.message.error_message import ErrorMessage
+from crud.item import create_item
 from exception.exception import OperatedException, ErrorCode
 from models.item import Item
 from models.product import Product
@@ -11,7 +12,7 @@ from schemas.collection import CollectionCreate, CollectionResponse, CollectionI
 from crud.collection import create_collection, delete_collection_by_id, get_collection_with_items, \
     delete_collection_items_by_id
 from schemas.collection_summary import CollectionSummaryOut
-
+from models import ProductInfo
 from schemas.item import ItemInfo
 from models.collection import Collection
 from schemas.collection_item_list import *
@@ -208,3 +209,38 @@ def get_collection_list_service(
         ))
 
     return result
+
+def register_item_in_collection_service(
+        user_id: int,
+        collection_id: int,
+        product_id: int,
+        db: Session
+):
+    item = create_item(
+        collection_id=collection_id,
+        product_id=product_id,
+        db=db
+    )
+    collection = db.query(Collection).filter(Collection.collection_id == collection_id).first()
+    product_info = db.query(ProductInfo).filter(ProductInfo.product_id == product_id).first()
+
+    if not collection:
+        raise ValueError(f"Collection {collection_id} not found")
+    if not product_info:
+        raise ValueError(f"ProductInfo {product_id} not found")
+
+    return {
+        "user_id": user_id,
+        "collection": [{
+            "collection_id": collection.collection_id,
+            "collection_title": collection.collection_title,
+            "created_at": str(collection.created_at),
+            "updated_at": str(collection.updated_at),
+        }],
+        "item": [{
+            "item_id": item.item_id,
+            "item_name": product_info.product_name,
+            "created_at": str(item.created_at),
+            "updated_at": str(item.updated_at),
+        }]
+    }
