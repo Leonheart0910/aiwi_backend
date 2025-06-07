@@ -12,13 +12,13 @@ from exception.handler import set_error_handlers
 app = FastAPI()
 
 # # CORS 미들웨어 설정
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["http://localhost:5173"],  # 허용할 출처(클라이언트) 주소를 지정합니다.
-#     allow_credentials=True,
-#     allow_methods=["*"],  # 모든 HTTP 메소드 허용
-#     allow_headers=["*"],  # 모든 헤더 허용
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 허용할 출처(클라이언트) 주소를 지정합니다.
+    allow_credentials=True,
+    allow_methods=["*"],  # 모든 HTTP 메소드 허용
+    allow_headers=["*"],  # 모든 헤더 허용
+)
 app.include_router(api_router, prefix="/api/v1")
 
 set_error_handlers(app)
