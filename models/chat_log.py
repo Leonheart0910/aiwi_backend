@@ -15,7 +15,7 @@ class ChatLog(base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     aiwi = relationship("Aiwi", back_populates="chat_log")
-    ai_seo_keyword = relationship(AiSeoKeyword, back_populates="chat_log")
-    ai_keyword = relationship("AiKeyword", back_populates="chat_log")
-    ai_recommend = relationship("AiRecommend", back_populates="chat_log")
+    ai_seo_keyword = relationship(AiSeoKeyword, back_populates="chat_log",cascade="all, delete-orphan")
+    ai_keyword = relationship("AiKeyword", back_populates="chat_log", cascade="all, delete-orphan")
+    ai_recommend = relationship("AiRecommend", back_populates="chat_log", cascade="all, delete-orphan")
 

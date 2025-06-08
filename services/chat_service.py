@@ -3,7 +3,7 @@ from http.client import HTTPException
 from sqlalchemy.orm import Session, load_only
 from api.dto_builder.chat_log_response_builder import build_chat_log_response
 from core.aiwi import generate_checklist, search_naver_items, compare_and_recommend
-from crud.chat import create_chat, chat_exist
+from crud.chat import create_chat, chat_exist, chat_delete
 from crud.chat_log import create_chat_log
 from models.aiwi import Aiwi
 from schemas.chat_list import ChatList
@@ -89,3 +89,13 @@ def chat_list_service(
     )
     return [ChatList(chat_id=c.chat_id, title=c.title, updated_at=c.updated_at) for c in chats]
 
+def chat_delete_service(
+        chat_id: str,
+        db: Session):
+    try:
+        delete_chat = chat_delete(chat_id=chat_id, db=db)
+        return {
+            "message" : "채팅이 삭제되었습니다."
+        }
+    except Exception as e:
+        raise HTTPException(500, str(e))

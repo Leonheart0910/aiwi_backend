@@ -15,4 +15,4 @@ class AiKeyword(base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     chat_log = relationship("ChatLog", back_populates="ai_keyword")
-    ai_product = relationship("AiProduct", back_populates="ai_keyword")
+    ai_product = relationship("AiProduct", back_populates="ai_keyword",cascade="all, delete-orphan")

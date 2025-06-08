@@ -45,4 +45,13 @@ def chat_exist(chat_id: str,
                db: Session):
     return db.query(Aiwi).filter(Aiwi.chat_id == chat_id).first() is not None
 
+def chat_delete(
+        chat_id: str,
+        db: Session
+):
+    aiwi = db.query(Aiwi).filter(Aiwi.chat_id == chat_id).first()
+    db.delete(aiwi)
+    db.commit()
+    return aiwi
+
 

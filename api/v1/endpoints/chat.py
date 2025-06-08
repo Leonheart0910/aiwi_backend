@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from api.dto_builder.chat_response_builder import build_chat_response
 from core.dependencies import get_db
-from services.chat_service import chat_input_service, chat_list_service
+from services.chat_service import chat_input_service, chat_list_service, chat_delete_service
 
 router = APIRouter()
 
@@ -35,4 +35,10 @@ def chat_list(
     return chat_list_service(user_id=user_id,
                              db=db)
 
-
+@router.delete("/chat/{chat_id}")
+def chat_delete(
+        chat_id: str,
+        db: Session = Depends(get_db)
+):
+    return chat_delete_service(chat_id=chat_id,
+                               db=db)
