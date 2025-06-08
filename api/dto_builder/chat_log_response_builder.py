@@ -36,8 +36,8 @@ def build_chat_log_response(chat_log_id: int, db: Session) -> ChatLogOut:
     for k in log.ai_keyword:
         for ap in k.ai_product:
             p = ap.product
-            img: Image | None = p.image[0] if p.image else None
-            info = p.product_info[0] if p.product_info else None
+            img: Image | None = p.image if p.image else None
+            info = p.product_info if p.product_info else None
 
             products.append(
                 ProductOut(
