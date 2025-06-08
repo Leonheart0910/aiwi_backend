@@ -4,7 +4,6 @@ from models.item import Item
 from models.product import Product
 from schemas.collection import CollectionCreate
 from sqlalchemy.orm import joinedload
-from crud.item import delete_item_by_id
 from fastapi import HTTPException
 
 
@@ -61,7 +60,7 @@ def delete_collection_items_by_id(db: Session,
 
     product_name = ""
     if item.product and item.product.product_info:
-        product_name = item.product.product_info[0].product_name
+        product_name = item.product.product_info.product_name
 
     db.delete(item)
     db.commit()
